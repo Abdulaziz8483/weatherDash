@@ -4,6 +4,7 @@ package WeatherDash.service;
 import WeatherDash.dto.RegistrationDTO;
 import WeatherDash.entity.ProfileEntity;
 import WeatherDash.enums.GeneralStatus;
+import WeatherDash.enums.ProfileRole;
 import WeatherDash.exps.AppBadException;
 import WeatherDash.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ public class AuthService {
     private ProfileRepository profileRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private ProfileRoleService profileRoleService;
+    @Autowired
+    private EmailSendingService emailSendingService;
 
     public String Registration(RegistrationDTO dto) {
 
@@ -28,6 +33,7 @@ public class AuthService {
         if (optional.isPresent()) {
             ProfileEntity profile = optional.get();
             if (profile.getStatus().equals(GeneralStatus.IN_REGISTRATION)) {
+                profileRoleService.delete(profile.getId());
                 profileRepository.delete(profile);
                 //send sms /// email
             } else {
@@ -35,15 +41,19 @@ public class AuthService {
             }
         }
 
-        ProfileEntity profile = new ProfileEntity();
-        profile.setUsername(dto.getUsername());
-        profile.setName(dto.getName());
-        profile.setSurname(dto.getSurname());
-        profile.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
-        profile.setStatus(GeneralStatus.IN_REGISTRATION);
-        profile.setCreatedDate(LocalDateTime.now());
-        profile.setVisible(true);
-        profileRepository.save(profile);//save
+        ProfileEntity entity = new ProfileEntity();
+        entity.setUsername(dto.getUsername());
+        entity.setName(dto.getName());
+        entity.setSurname(dto.getSurname());
+        entity.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
+        entity.setStatus(GeneralStatus.IN_REGISTRATION);
+        entity.setCreatedDate(LocalDateTime.now());
+        entity.setVisible(true);
+        profileRepository.save(entity);//save
+
+        profileRoleService.createProfileRole(entity.getId(), ProfileRole.ROLE_USER);
+
+        emailSendingService.sendRegistrationEmail(entity.getUsername(),entity.getId());
 
         return "success";
     }
