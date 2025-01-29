@@ -8,7 +8,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,10 +20,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private final UserDetailsService userDetailsService;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    public JwtAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -51,9 +52,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (JwtException | UsernameNotFoundException e) {
-            System.err.println("JWT token validation failed: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid JWT Token: " + e.getMessage());
+            return;
         }
         filterChain.doFilter(request, response);
     }
 }
-

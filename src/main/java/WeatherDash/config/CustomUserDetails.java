@@ -5,10 +5,13 @@ import WeatherDash.entity.ProfileRoleEntity;
 import WeatherDash.enums.GeneralStatus;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
@@ -18,7 +21,7 @@ public class CustomUserDetails implements UserDetails {
     private String username;
     private String password;
     private GeneralStatus status;
-    private List<ProfileRoleEntity> role;
+    private ProfileRoleEntity role;
 
     public CustomUserDetails(ProfileEntity profile) {
         this.id = profile.getId();
@@ -27,43 +30,51 @@ public class CustomUserDetails implements UserDetails {
         this.username = profile.getUsername();
         this.password = profile.getPassword();
         this.status = profile.getStatus();
-        this.role=profile.getRole();
-
+        this.role = profile.getRole().get(0);
     }
 
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return role.stream()
+//                .map(r -> (GrantedAuthority) () -> String.valueOf(r.getRoles()))
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role.getRoles().name()));
+        return authorities;
     }
+
 
     @Override
     public String getPassword() {
-        return "";
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return status == GeneralStatus.ACTIVE;
     }
 }

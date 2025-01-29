@@ -1,6 +1,7 @@
 package WeatherDash.service;
 
 
+import WeatherDash.config.CustomUserDetails;
 import WeatherDash.dto.AuthDto;
 import WeatherDash.dto.RegistrationDTO;
 import WeatherDash.entity.ProfileEntity;
@@ -78,18 +79,25 @@ public class AuthService {
     }
 
     public String login(@Valid AuthDto dto) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
 
-        Optional<ProfileEntity> profileEntity = profileRepository.findByUsernameAndVisibleTrue(dto.getUsername());
-        if (profileEntity.isPresent()) {
-            ProfileEntity profile = profileEntity.get();
-            if (profile.getStatus().equals(GeneralStatus.ACTIVE)) {
-                if (!bCryptPasswordEncoder.matches(dto.getPassword(), profile.getPassword())) {
-                    throw new AppBadException("password does not match");
-                } else {
-                    return JwtUtil.encode(profile.getUsername(), profile.getId(),profile.getRole());
-                }
-            }
+        System.out.printf("authentication" + authentication);
+
+        if (authentication.isAuthenticated()) {
+            CustomUserDetails profile = (CustomUserDetails) authentication.getPrincipal();
+            return  JwtUtil.encode(profile.getUsername(), profile.getId(), profile.getRole());
         }
+//        Optional<ProfileEntity> profileEntity = profileRepository.findByUsernameAndVisibleTrue(dto.getUsername());
+//        if (profileEntity.isPresent()) {
+//            ProfileEntity profile = profileEntity.get();
+//            if (profile.getStatus().equals(GeneralStatus.ACTIVE)) {
+//                if (!bCryptPasswordEncoder.matches(dto.getPassword(), profile.getPassword())) {
+//                    throw new AppBadException("password does not match");
+//                } else {
+//                    return JwtUtil.encode(profile.getUsername(), profile.getId(), profile.getRole());
+//                }
+//            }
+//        }
         throw new AppBadException("username or password does not match");
 
     }

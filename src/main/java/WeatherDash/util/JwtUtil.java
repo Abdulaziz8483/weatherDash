@@ -17,11 +17,11 @@ public class JwtUtil {
     private static final int tokenLiveTime = 1000 * 3600 * 24;
     private static final String secretKey = "veryLongSecretmazgillattayevlasharaaxmojonjinnijonsurbetbekkiydirhonuxlatdibekloxovdangasabekochkozjonduxovmashaynikmaydagapchishularnioqiganbolsangizgapyoqaniqsizmazgi";
 
-    public static String encode(String username, Integer id, List<ProfileRoleEntity> roles) {
+    public static String encode(String username, Integer id, ProfileRoleEntity roles) {
         Map<String, String> Claims = new HashMap<>();
         Claims.put("username", username);
         Claims.put("id", String.valueOf(id));
-        Claims.put("roles", roles.toString());
+        Claims.put("roles", roles.getRoles().name());
 
         return Jwts
                 .builder()
@@ -40,8 +40,8 @@ public class JwtUtil {
                 .parseSignedClaims(token)
                 .getPayload();
         String username = (String) claims.get("username");
-        String role = (String) claims.get("role");
-        return new JwtDTO(username, role);
+        String role = (String) claims.get("roles");
+        return new JwtDTO(role, username);
     }
     private static SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
