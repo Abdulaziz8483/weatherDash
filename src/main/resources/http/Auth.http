@@ -8,8 +8,20 @@ POST localhost:8081/api/v1
 Content-Type: application/json
 
 {
-  "name": "lazizbek",
-  "surname": "Komilov",
-  "username": "komilovlazizbek48@gmail.com",
+  "name": "laziz",
+  "surname": "Komilov2",
+  "username": "komilovlazizbek48+1@gmail.com",
+  "password": "12345"
+}
+
+###
+GET http://localhost:8081/api/v1/verification/{profileId}
+
+###
+POST http://localhost:8081/api/v1/login
+Content-Type: application/json
+
+{
+  "username": "komilovlazizbek48+1@gmail.com",
   "password": "12345"
 }

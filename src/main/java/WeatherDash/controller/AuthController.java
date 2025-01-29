@@ -1,15 +1,14 @@
 package WeatherDash.controller;
 
 
+import WeatherDash.dto.AuthDto;
+import WeatherDash.dto.ProfileDto;
 import WeatherDash.dto.RegistrationDTO;
 import WeatherDash.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -22,4 +21,17 @@ public class AuthController {
 
         return ResponseEntity.ok().body(authService.Registration(dto));
     }
+
+    @GetMapping("/verification/{profileId}")
+    public ResponseEntity<String> regVerification(@PathVariable("profileId") Integer profileId){
+
+        return ResponseEntity.ok().body(authService.regVerification(profileId));
+    }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody @Valid AuthDto dto){
+        return ResponseEntity.ok(authService.login(dto));
+    }
+
 }
