@@ -12,7 +12,9 @@ import WeatherDash.repository.ProfileRepository;
 import WeatherDash.util.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -66,7 +68,7 @@ public class AuthService {
 
         emailSendingService.sendRegistrationEmail(entity.getUsername(), entity.getId());
 
-        return "success";
+        return "Registration successful";
     }
 
     public String regVerification(Integer profileId) {
@@ -75,30 +77,25 @@ public class AuthService {
             profileRepository.changeStatus(profileId, GeneralStatus.ACTIVE);
             return "verification finished";
         }
-        throw new AppBadException("verification failed");
+        throw new AppBadException("Verification failed. User is not in registration status");
     }
 
     public String login(@Valid AuthDto dto) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
-
-        System.out.printf("authentication" + authentication);
-
-        if (authentication.isAuthenticated()) {
-            CustomUserDetails profile = (CustomUserDetails) authentication.getPrincipal();
-            return  JwtUtil.encode(profile.getUsername(), profile.getId(), profile.getRole());
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
+            if (authentication.isAuthenticated()) {
+                CustomUserDetails profile = (CustomUserDetails) authentication.getPrincipal();
+                String token = JwtUtil.encode(profile.getUsername(), profile.getId(), profile.getRole());
+                return "{\"message\": \"Login successful.\", \"token\": \"" + token + "\"}";
+            }
+            throw new AppBadException("Invalid username or password");
+        } catch (BadCredentialsException e) {
+            throw new AppBadException("Invalid username or password");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new AppBadException("Internal server error");
         }
-//        Optional<ProfileEntity> profileEntity = profileRepository.findByUsernameAndVisibleTrue(dto.getUsername());
-//        if (profileEntity.isPresent()) {
-//            ProfileEntity profile = profileEntity.get();
-//            if (profile.getStatus().equals(GeneralStatus.ACTIVE)) {
-//                if (!bCryptPasswordEncoder.matches(dto.getPassword(), profile.getPassword())) {
-//                    throw new AppBadException("password does not match");
-//                } else {
-//                    return JwtUtil.encode(profile.getUsername(), profile.getId(), profile.getRole());
-//                }
-//            }
-//        }
-        throw new AppBadException("username or password does not match");
 
     }
 

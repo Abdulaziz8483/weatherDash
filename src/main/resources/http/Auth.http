@@ -4,13 +4,13 @@ GET https://examples.http-client.intellij.net/get
 
 ### Registration
 
-POST localhost:8081/api/v1
+POST http://localhost:8081/api/v1
 Content-Type: application/json
 
 {
   "name": "laziz",
   "surname": "Komilov2",
-  "username": "komilovlazizbek48+1@gmail.com",
+  "username": "komilovlazizbek481@gmail.com",
   "password": "12345"
 }
 
@@ -22,6 +22,8 @@ POST http://localhost:8081/api/v1/login
 Content-Type: application/json
 
 {
-  "username": "komilovlazizbek48+1@gmail.com",
-  "password": "12345"
+  "username": "komilovlazizbek481@gmail.com",
+  "password": "123454"
 }
+
+
