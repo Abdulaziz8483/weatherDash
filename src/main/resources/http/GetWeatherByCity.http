@@ -1,0 +1,8 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+GET http://localhost:8081/api/v2/weather/Buxoro
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6IlJPTEVfQURNSU4iLCJpZCI6IjEiLCJ1c2VybmFtZSI6ImtvbWlsb3ZsYXppemJlazQ4MUBnbWFpbC5jb20iLCJzdWIiOiJrb21pbG92bGF6aXpiZWs0ODFAZ21haWwuY29tIiwiaWF0IjoxNzM4MTc3Mjc1LCJleHAiOjE3MzgyNjM2NzV9.esNwwFa_KfKfA12-xs9GPTWQ4zcoRFJhnREQmMXXUWP6iRPzKJipbMfS3D_ky3dQleT-fZ1qTfRZk_1GyxgztA
