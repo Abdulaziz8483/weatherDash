@@ -47,7 +47,6 @@ public class SpringConfig {
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
             authorizationManagerRequestMatcherRegistry
                     .requestMatchers("/api/v1/**").permitAll()
-                    .requestMatchers("/api/v2/**").hasRole("USER")
                     .anyRequest()
                     .authenticated();
         }).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

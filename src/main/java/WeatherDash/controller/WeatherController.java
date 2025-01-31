@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v2/weather")
+@RequestMapping("/api/v1/weather")
 public class WeatherController {
     @Autowired
     private WeatherService weatherService;
@@ -23,9 +23,9 @@ public class WeatherController {
 
     }
 
-    @GetMapping("/cities")
-    public List<WeatherResponse> getWeatherForCities(@RequestParam List<String> cities) {
-        return weatherService.getWeatherForCities(cities);
-    }
+//    @GetMapping("/cities")
+//    public List<WeatherResponse> getWeatherForCities(@RequestParam List<String> cities) {
+//        return weatherService.getWeatherForCities(cities);
+//    }
 
 }

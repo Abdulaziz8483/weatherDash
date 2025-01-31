@@ -4,7 +4,7 @@ GET https://examples.http-client.intellij.net/get
 
 ### Registration
 
-POST http://localhost:8081/api/v1
+POST http://localhost:8081/api/v1/auth
 Content-Type: application/json
 
 {
