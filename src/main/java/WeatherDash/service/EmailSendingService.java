@@ -46,7 +46,7 @@ public class EmailSendingService {
                 "<h1>Complete Registration</h1>\n" +
                 "<p>\n" +
                 "    Please click to button link for completing registration:<a class=\"button-link\"\n" +
-                "        href=\"http://localhost:8081/api/v1/verification/%d\" target=\"_blank\">Click there</a>\n" +
+                "        href=\"http://localhost:8081/api/v1/auth/verification/%d\" target=\"_blank\">Click there</a>\n" +
                 "</p>\n" +
                 "</body>\n" +
                 "</html>";
