@@ -43,7 +43,7 @@ public class WeatherCronJob {
             "Sydney", "Melbourne", "Brisbane", "Auckland", "Wellington",
             "Perth", "Adelaide", "Suva", "Port Moresby"
     );
-    @Scheduled(cron = "0/30 * * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void updateDailyWeather() {
         weatherDataService.fetchAndSaveWeatherForCities(CITIES);
     }
