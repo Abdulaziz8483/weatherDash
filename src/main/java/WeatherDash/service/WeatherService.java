@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class WeatherService {
     private static final String API_KEY = "3a7dab2d5f7e4302a90120723252701";
@@ -28,6 +31,34 @@ public class WeatherService {
                 .bodyToMono(WeatherApiResponse.class)
                 .map(this::mapToWeatherResponse);
     }
+
+
+
+
+    public List<WeatherResponse> getWeatherForCities(List<String> cities) {
+        List<WeatherResponse> weatherResponses = new ArrayList<>();
+
+        for (String city : cities) {
+            WeatherApiResponse apiResponse = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .queryParam("key", API_KEY)
+                            .queryParam("q", city)
+                            .build())
+                    .retrieve()
+                    .onStatus(HttpStatusCode::isError, clientResponse ->
+                            Mono.error(new AppBadException("Invalid city name: " + city)))
+                    .bodyToMono(WeatherApiResponse.class)
+                    .block();
+            if (apiResponse != null) {
+                weatherResponses.add(mapToWeatherResponse(apiResponse));
+            }
+        }
+        return weatherResponses;
+    }
+
+
+
+
 
     private WeatherResponse mapToWeatherResponse(WeatherApiResponse apiResponse) {
         return new WeatherResponse(

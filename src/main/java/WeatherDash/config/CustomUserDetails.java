@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
@@ -32,13 +31,6 @@ public class CustomUserDetails implements UserDetails {
         this.status = profile.getStatus();
         this.role = profile.getRole().get(0);
     }
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return role.stream()
-//                .map(r -> (GrantedAuthority) () -> String.valueOf(r.getRoles()))
-//                .collect(Collectors.toList());
-//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,6 +1,9 @@
 package WeatherDash.dto;
 
+import jakarta.persistence.Column;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Data
 public class WeatherResponse {
@@ -14,6 +17,9 @@ public class WeatherResponse {
     private String wind_color;
     private int cloud;
     private String cloud_color;
+    @Column(name = "data")
+    private LocalDateTime date = LocalDateTime.now();
+
 
     public WeatherResponse(String name, String country, double lat, double lon, double temp_c, String temp_color, double wind_kph, String wind_color, int cloud, String cloud_color) {
         this.name = name;
